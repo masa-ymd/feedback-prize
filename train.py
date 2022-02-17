@@ -54,3 +54,35 @@ class Config:
         verbose_steps = 16
         n_epoch = 1
         n_fold = 2
+
+IGNORE_INDEX = -100
+NON_LABEL = -1
+OUTPUT_LABELS = ['0', 'B-Lead', 'I-Lead', 'B-Position', 'I-Position', 'B-Claim', 'I-Claim', 'B-Counterclaim', 'I-Counterclaim', 
+                 'B-Rebuttal', 'I-Rebuttal', 'B-Evidence', 'I-Evidence', 'B-Concluding Statement', 'I-Concluding Statement']
+LABELS_TO_IDS = {v:k for k,v in enumerate(OUTPUT_LABELS)}
+IDS_TO_LABELS = {k:v for k,v in enumerate(OUTPUT_LABELS)}
+
+MIN_THRESH = {
+    "I-Lead": 9,
+    "I-Position": 5,
+    "I-Evidence": 14,
+    "I-Claim": 3,
+    "I-Concluding Statement": 11,
+    "I-Counterclaim": 6,
+    "I-Rebuttal": 4,
+}
+
+PROB_THRESH = {
+    "I-Lead": 0.7,
+    "I-Position": 0.55,
+    "I-Evidence": 0.65,
+    "I-Claim": 0.55,
+    "I-Concluding Statement": 0.7,
+    "I-Counterclaim": 0.5,
+    "I-Rebuttal": 0.55,
+}
+
+if not os.path.exists(Config.model_dir):
+    os.makedirs(Config.model_dir)
+if not os.path.exists(Config.output_dir):
+    os.makedirs(Config.output_dir)
