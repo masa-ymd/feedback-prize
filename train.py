@@ -1,7 +1,7 @@
 import os
 
 class Config:
-    name = 'fp_exp3'
+    name = 'fp_exp1'
     # choose model 
     #model_savename = 'roberta-base'
     #model_savename = 'roberta-large'
