@@ -97,3 +97,18 @@ for discourse_text, file_span, discourse_id in zip(
 
     print("\n" + "*" * 20 + "\n")
     counter += 1
+
+from collections import Counter
+
+all_diffs = []
+for discourse_text, file_text in not_equal_texts[["discourse_text", "text_by_index"]].values:
+    
+    if len(discourse_text) != len(file_text):
+        continue
+        
+    all_diffs.extend([(char1, char2) for char1, char2 in zip(discourse_text, file_text) if char1!=char2])
+
+    
+counter = Counter(all_diffs)
+
+counter.most_common(20)
