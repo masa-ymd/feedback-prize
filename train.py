@@ -13,7 +13,7 @@ class Config:
         model_name = 'roberta-base'
     elif model_savename == 'roberta-large':
         model_name = 'roberta-large'
-    base_dir = '/content/drive/MyDrive/feedback_prize'
+    base_dir = '/root/kaggle/feedback-prize-2021'
     data_dir = os.path.join(base_dir, 'data')
     pre_data_dir = os.path.join(base_dir, 'data/preprocessed')
     model_dir = os.path.join(base_dir, f'model/{name}')
