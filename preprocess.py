@@ -209,7 +209,7 @@ def find_pred_string(examples):
     discourse_ids = []
     
     for id_ in examples["id"]:
-        with open(f"../input/feedback-prize-2021/train/{id_}.txt") as fp:
+        with open(f"{BASE_DIR}/train/{id_}.txt") as fp:
             file_text = fp.read()
 
         discourse_data = df[df["id"] == id_]
