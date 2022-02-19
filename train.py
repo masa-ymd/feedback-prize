@@ -1,4 +1,5 @@
 import os
+import time
 import pandas as pd
 import numpy as np
 import random
@@ -14,13 +15,16 @@ import torch.nn as nn
 from transformers import LongformerConfig, LongformerModel, LongformerTokenizerFast, AutoConfig, AutoModel, AutoTokenizer
 from torch.utils.data import Dataset, DataLoader
 from torch.cuda.amp import autocast, GradScaler
+import wandb
+
+wandb.login()
 
 class Config:
-    name = 'fp_exp1'
     # choose model 
     #model_savename = 'roberta-base'
     #model_savename = 'roberta-large'
     model_savename = 'longformer'
+    name = f"{model_savename}_{time.strftime('%Y%m%d%H%M%S', time.localtime())}"
     # customize for my own Google Colab Environment
     if model_savename == 'longformer':
         model_name = 'allenai/longformer-base-4096'
@@ -37,7 +41,7 @@ class Config:
     n_epoch = 2 # not to exceed runtime limit
     n_fold = 5
     verbose_steps = 500
-    random_seed = 42
+    random_seed = 2022
 
     if model_savename == 'longformer':
         max_length = 1024
