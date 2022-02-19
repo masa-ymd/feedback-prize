@@ -588,3 +588,4 @@ if Config.is_debug:
 else:
     df_train = df_alltrain.copy()
 print(f'overall cv score: {oof_score(df_train, oof)}')
+wandb.log({'overall_cv': oof_score(df_train, oof)})
