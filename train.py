@@ -18,6 +18,7 @@ from torch.cuda.amp import autocast, GradScaler
 import wandb
 
 wandb.login()
+wandb.init(project="feedback-prize-2021")
 
 class Config:
     # choose model 
@@ -37,7 +38,7 @@ class Config:
     pre_data_dir = os.path.join(base_dir, 'data/preprocessed')
     model_dir = os.path.join(base_dir, f'model/{name}')
     output_dir = os.path.join(base_dir, f'output/{name}')
-    is_debug = False
+    is_debug = True
     n_epoch = 2 # not to exceed runtime limit
     n_fold = 5
     verbose_steps = 500
@@ -74,7 +75,6 @@ class Config:
         n_epoch = 1
         n_fold = 2
 
-wandb.init(project=Config.name)
 wandb.config.lr = Config.lr
 wandb.config.hidden_dropout_prob = Config.hidden_dropout_prob
 
