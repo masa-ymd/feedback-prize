@@ -523,7 +523,7 @@ def train_fn(model, dl_train, optimizer, epoch, criterion):
     gc.collect()
     print(f'epoch {epoch} - training loss: {epoch_loss:.4f}')
     print(f'epoch {epoch} - training accuracy: {epoch_accuracy:.4f}')
-    wandb.log({'epoch': epoch, 'loss': epoch_loss, 'accuracy': epoch_accuracy})
+    wandb.log({'epoch': epoch, 'train_loss': epoch_loss, 'train_accuracy': epoch_accuracy})
 
 def valid_fn(model, df_val, df_val_eval, dl_val, epoch, criterion):
     oof, valid_loss, valid_acc  = get_preds_onefold(model, df_val, dl_val, criterion, valid_flg=True)
@@ -540,6 +540,7 @@ def valid_fn(model, df_val, df_val_eval, dl_val, epoch, criterion):
         f1score.append(f1)
     f1avg = np.mean(f1score)
     print(f'Overall Validation avg F1: {f1avg:.4f} val_loss:{valid_loss:.4f} val_accuracy:{valid_acc:.4f}')
+    wandb.log({'epoch': epoch, 'F1': f1avg, 'valid_loss': valid_loss, 'valid_accuracy': valid_acc})
     return valid_loss, oof
 
 # training loop
