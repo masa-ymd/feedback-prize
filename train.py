@@ -74,6 +74,10 @@ class Config:
         n_epoch = 1
         n_fold = 2
 
+wandb.init(project=Config.name)
+wandb.config.lr = Config.lr
+wandb.config.hidden_dropout_prob = Config.hidden_dropout_prob
+
 IGNORE_INDEX = -100
 NON_LABEL = -1
 OUTPUT_LABELS = ['0', 'B-Lead', 'I-Lead', 'B-Position', 'I-Position', 'B-Claim', 'I-Claim', 'B-Counterclaim', 'I-Counterclaim', 
@@ -519,6 +523,7 @@ def train_fn(model, dl_train, optimizer, epoch, criterion):
     gc.collect()
     print(f'epoch {epoch} - training loss: {epoch_loss:.4f}')
     print(f'epoch {epoch} - training accuracy: {epoch_accuracy:.4f}')
+    wandb.log({'epoch': epoch, 'loss': epoch_loss, 'accuracy': epoch_accuracy})
 
 def valid_fn(model, df_val, df_val_eval, dl_val, epoch, criterion):
     oof, valid_loss, valid_acc  = get_preds_onefold(model, df_val, dl_val, criterion, valid_flg=True)
