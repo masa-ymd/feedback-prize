@@ -38,7 +38,7 @@ class Config:
     pre_data_dir = os.path.join(base_dir, 'data/preprocessed')
     model_dir = os.path.join(base_dir, f'model/{name}')
     output_dir = os.path.join(base_dir, f'output/{name}')
-    is_debug = True
+    is_debug = False
     n_epoch = 2 # not to exceed runtime limit
     n_fold = 5
     verbose_steps = 500
@@ -77,6 +77,8 @@ class Config:
 
 wandb.config.lr = Config.lr
 wandb.config.hidden_dropout_prob = Config.hidden_dropout_prob
+wandb.config.random_seed = Config.random_seed
+wandb.config.n_fold = Config.n_fold
 
 IGNORE_INDEX = -100
 NON_LABEL = -1
