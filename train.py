@@ -40,7 +40,7 @@ class Config:
     output_dir = os.path.join(base_dir, f'output/{name}')
     is_debug = False
     n_epoch = 2 # not to exceed runtime limit
-    n_fold = 5
+    n_fold = 7
     verbose_steps = 500
     random_seed = 2022
 
@@ -78,7 +78,7 @@ class Config:
 wandb.config.lr = Config.lr
 wandb.config.hidden_dropout_prob = Config.hidden_dropout_prob
 wandb.config.random_seed = Config.random_seed
-wandb.config.n_fold = Config.n_fold
+wandb.config.model_savename = Config.model_savename
 
 IGNORE_INDEX = -100
 NON_LABEL = -1
