@@ -44,6 +44,10 @@ class Config:
 
     num_labels = 15
     label_subtokens = True
+    output_hidden_states = True
+    hidden_dropout_prob = 0.1
+    layer_norm_eps = 1e-7
+    add_pooling_layer = False
 
     if is_debug:
         debug_sample = 1000
@@ -54,6 +58,10 @@ class Config:
 wandb.config.lr = Config.lr
 wandb.config.random_seed = Config.random_seed
 wandb.config.model_savename = Config.model_savename
+wandb.config.output_hidden_states = Config.output_hidden_states
+wandb.config.hidden_dropout_prob = Config.hidden_dropout_prob
+wandb.config.layer_norm_eps = Config.layer_norm_eps
+wandb.config.add_pooling_layer = Config.add_pooling_layer
 
 IGNORE_INDEX = -100
 NON_LABEL = -1
@@ -144,7 +152,7 @@ print(test_texts.head())
 
 # set seed & split train/test
 def seed_everything(seed=Config.random_seed):
-    #os.environ['PYTHONSEED'] = str(seed)
+    os.environ['PYTHONSEED'] = str(seed)
     np.random.seed(seed%(2**32-1))
     random.seed(seed)
     torch.manual_seed(seed)
@@ -153,6 +161,7 @@ def seed_everything(seed=Config.random_seed):
     torch.backends.cudnn.benchmark = False
 
 seed_everything()
+
 # device optimization
 if torch.cuda.is_available():
     device = torch.device('cuda')
@@ -221,35 +230,40 @@ class FeedbackPrizeDataset(Dataset):
 class FeedbackModel(nn.Module):
     def __init__(self):
         super(FeedbackModel, self).__init__()
-        if Config.model_savename == 'longformer':
-            model_config = LongformerConfig.from_pretrained(Config.model_name)
-            self.backbone = LongformerModel.from_pretrained(Config.model_name, config=model_config)
-        else:
-            model_config = AutoConfig.from_pretrained(Config.model_name)
-            self.backbone = AutoModel.from_pretrained(Config.model_name, config=model_config)
+        model_config = LongformerConfig.from_pretrained(Config.model_name)
+        model_config.update(
+            {
+                "output_hidden_states": Config.output_hidden_states,
+                "hidden_dropout_prob": Config.hidden_dropout_prob,
+                "layer_norm_eps": Config.layer_norm_eps,
+                "add_pooling_layer": Config.add_pooling_layer,
+            }
+        )
         self.model_config = model_config
-        self.dropout1 = nn.Dropout(0.1)
-        self.dropout2 = nn.Dropout(0.2)
-        self.dropout3 = nn.Dropout(0.3)
-        self.dropout4 = nn.Dropout(0.4)
-        self.dropout5 = nn.Dropout(0.5)
+
+        self.backbone = LongformerModel.from_pretrained(Config.model_name, config=self.model_config)
+
+        #self.dropout1 = nn.Dropout(0.1)
+        #self.dropout2 = nn.Dropout(0.2)
+        #self.dropout3 = nn.Dropout(0.3)
+        #self.dropout4 = nn.Dropout(0.4)
+        #self.dropout5 = nn.Dropout(0.5)
         self.head = nn.Linear(model_config.hidden_size, Config.num_labels)
     
     def forward(self, input_ids, mask):
         x = self.backbone(input_ids, mask)
-        logits1 = self.head(self.dropout1(x[0]))
-        logits2 = self.head(self.dropout2(x[0]))
-        logits3 = self.head(self.dropout3(x[0]))
-        logits4 = self.head(self.dropout4(x[0]))
-        logits5 = self.head(self.dropout5(x[0]))
-        logits = (logits1 + logits2 + logits3 + logits4 + logits5) / 5
+        #logits1 = self.head(self.dropout1(x[0]))
+        #logits2 = self.head(self.dropout2(x[0]))
+        #logits3 = self.head(self.dropout3(x[0]))
+        #logits4 = self.head(self.dropout4(x[0]))
+        #logits5 = self.head(self.dropout5(x[0]))
+        #logits = (logits1 + logits2 + logits3 + logits4 + logits5) / 5
+        logits = self.head(x)
+        logits = torch.softmax(logits, dim=-1)
         return logits
 
 def build_model_tokenizer():
-    if Config.model_savename == 'longformer':
-        tokenizer = LongformerTokenizerFast.from_pretrained(Config.model_name, add_prefix_space = True)
-    else:
-        tokenizer = AutoTokenizer.from_pretrained(Config.model_name, add_prefix_space = True)
+    tokenizer = LongformerTokenizerFast.from_pretrained(Config.model_name, add_prefix_space = True)
     model = FeedbackModel()
     return model, tokenizer
 
