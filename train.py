@@ -22,17 +22,10 @@ wandb.init(project="feedback-prize-2021")
 
 class Config:
     # choose model 
-    #model_savename = 'roberta-base'
-    #model_savename = 'roberta-large'
     model_savename = 'longformer'
     name = f"{model_savename}_{time.strftime('%Y%m%d%H%M%S', time.localtime())}"
     # customize for my own Google Colab Environment
-    if model_savename == 'longformer':
-        model_name = 'allenai/longformer-base-4096'
-    elif model_savename == 'roberta-base':
-        model_name = 'roberta-base'
-    elif model_savename == 'roberta-large':
-        model_name = 'roberta-large'
+    model_name = 'allenai/longformer-base-4096'
     base_dir = '/root/kaggle/feedback-prize-2021'
     data_dir = os.path.join(base_dir, 'data')
     pre_data_dir = os.path.join(base_dir, 'data/preprocessed')
@@ -40,35 +33,18 @@ class Config:
     output_dir = os.path.join(base_dir, f'output/{name}')
     is_debug = False
     n_epoch = 2 # not to exceed runtime limit
-    n_fold = 7
-    verbose_steps = 500
+    n_fold = 5
+    verbose_steps = 1000
     random_seed = 2022
 
-    if model_savename == 'longformer':
-        max_length = 1024
-        inference_max_length = 4096
-        train_batch_size = 4
-        valid_batch_size = 4
-        lr = 4e-5
-    elif model_savename == 'roberta-base':
-        max_length = 512
-        inference_max_length = 512
-        train_batch_size = 8
-        valid_batch_size = 8
-        lr = 8e-5
-    elif model_savename == 'roberta-large':
-        max_length = 512
-        inference_max_length = 512
-        train_batch_size = 4
-        valid_batch_size = 4
-        lr = 1e-5
+    max_length = 4096
+    train_batch_size = 4
+    valid_batch_size = 4
+    lr = 4e-5
+
     num_labels = 15
     label_subtokens = True
-    output_hidden_states = True
-    hidden_dropout_prob = 0.1
-    layer_norm_eps = 1e-7
-    add_pooling_layer = False
-    verbose_steps = 500
+
     if is_debug:
         debug_sample = 1000
         verbose_steps = 16
@@ -76,7 +52,6 @@ class Config:
         n_fold = 2
 
 wandb.config.lr = Config.lr
-wandb.config.hidden_dropout_prob = Config.hidden_dropout_prob
 wandb.config.random_seed = Config.random_seed
 wandb.config.model_savename = Config.model_savename
 
