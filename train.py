@@ -32,14 +32,14 @@ class Config:
     model_dir = os.path.join(base_dir, f'model/{name}')
     output_dir = os.path.join(base_dir, f'output/{name}')
     is_debug = False
-    n_epoch = 10 # not to exceed runtime limit
+    n_epoch = 3 # not to exceed runtime limit
     n_fold = 5
-    verbose_steps = 1000
+    verbose_steps = 2000
     random_seed = 2022
 
     max_length = 4096
-    train_batch_size = 4
-    valid_batch_size = 4
+    train_batch_size = 2
+    valid_batch_size = 2
     lr = 4e-5
 
     num_labels = 15
@@ -52,7 +52,7 @@ class Config:
     if is_debug:
         debug_sample = 1000
         verbose_steps = 16
-        n_epoch = 1
+        n_epoch = 2
         n_fold = 2
 
 wandb.config.lr = Config.lr
@@ -257,9 +257,10 @@ class FeedbackModel(nn.Module):
         #logits3 = self.head(self.dropout3(x[0]))
         #logits4 = self.head(self.dropout4(x[0]))
         #logits5 = self.head(self.dropout5(x[0]))
-        #logits = (logits1 + logits2 + logits3 + logits4 + logits5) / 5
-        logits = self.head(x)
-        logits = torch.softmax(logits, dim=-1)
+        #logitsx = (logits1 + logits2 + logits3 + logits4 + logits5) / 5
+        logits = self.head(x.last_hidden_state)
+        #logits = torch.softmax(logits, dim=-1)
+        #return logits, 0, {}
         return logits
 
 def build_model_tokenizer():
