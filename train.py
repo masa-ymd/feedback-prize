@@ -32,8 +32,8 @@ class Config:
     model_dir = os.path.join(base_dir, f'model/{name}')
     output_dir = os.path.join(base_dir, f'output/{name}')
     is_debug = False
-    n_epoch = 5 # not to exceed runtime limit
-    n_fold = 5
+    n_epoch = 3 # not to exceed runtime limit
+    n_fold = 3
     verbose_steps = 2000
     random_seed = 2022
 
