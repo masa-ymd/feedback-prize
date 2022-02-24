@@ -32,14 +32,14 @@ class Config:
     model_dir = os.path.join(base_dir, f'model/{name}')
     output_dir = os.path.join(base_dir, f'output/{name}')
     is_debug = False
-    n_epoch = 3 # not to exceed runtime limit
-    n_fold = 3
+    n_epoch = 5 # not to exceed runtime limit
+    n_fold = 5
     verbose_steps = 2000
-    random_seed = 2022
+    random_seed = 2045
 
-    max_length = 4096
-    train_batch_size = 2
-    valid_batch_size = 2
+    max_length = 512
+    train_batch_size = 8
+    valid_batch_size = 8
     lr = 4e-5
 
     num_labels = 15
@@ -47,7 +47,7 @@ class Config:
     output_hidden_states = True
     hidden_dropout_prob = 0.1
     layer_norm_eps = 1e-7
-    add_pooling_layer = False
+    add_pooling_layer = True
 
     if is_debug:
         debug_sample = 1000
