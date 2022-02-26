@@ -32,15 +32,15 @@ class Config:
     model_dir = os.path.join(base_dir, f'model/{name}')
     output_dir = os.path.join(base_dir, f'output/{name}')
     is_debug = False
-    n_epoch = 5 # not to exceed runtime limit
+    n_epoch = 3 # not to exceed runtime limit
     n_fold = 5
     verbose_steps = 2000
     random_seed = 2045
 
     max_length = 1600
-    train_batch_size = 8
-    valid_batch_size = 8
-    lr = 4e-5
+    train_batch_size = 4
+    valid_batch_size = 4
+    lr = 5e-5
 
     num_labels = 15
     label_subtokens = True
