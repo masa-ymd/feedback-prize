@@ -384,7 +384,7 @@ def inference(model, dl, criterion, valid_flg):
             preds, preds_prob = active_preds_prob(sf_logits)
             valid_accuracy += accuracy_score(labels.cpu().numpy(), preds.cpu().numpy())
             loss = criterion(logits, labels)
-            valid_loss += loss.item())
+            valid_loss += loss.item()
         
         if batch_idx == 1:
             all_logits = sf_raw_logits.cpu().numpy()
