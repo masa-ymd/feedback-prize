@@ -37,7 +37,7 @@ class Config:
     verbose_steps = 2000
     random_seed = 2045
 
-    max_length = 512
+    max_length = 1600
     train_batch_size = 8
     valid_batch_size = 8
     lr = 4e-5
@@ -65,7 +65,7 @@ wandb.config.add_pooling_layer = Config.add_pooling_layer
 
 IGNORE_INDEX = -100
 NON_LABEL = -1
-OUTPUT_LABELS = ['0', 'B-Lead', 'I-Lead', 'B-Position', 'I-Position', 'B-Claim', 'I-Claim', 'B-Counterclaim', 'I-Counterclaim', 
+OUTPUT_LABELS = ['O', 'B-Lead', 'I-Lead', 'B-Position', 'I-Position', 'B-Claim', 'I-Claim', 'B-Counterclaim', 'I-Counterclaim', 
                  'B-Rebuttal', 'I-Rebuttal', 'B-Evidence', 'I-Evidence', 'B-Concluding Statement', 'I-Concluding Statement']
 LABELS_TO_IDS = {v:k for k,v in enumerate(OUTPUT_LABELS)}
 IDS_TO_LABELS = {k:v for k,v in enumerate(OUTPUT_LABELS)}
@@ -81,13 +81,13 @@ MIN_THRESH = {
 }
 
 PROB_THRESH = {
-    "I-Lead": 0.7,
-    "I-Position": 0.55,
-    "I-Evidence": 0.65,
-    "I-Claim": 0.55,
-    "I-Concluding Statement": 0.7,
-    "I-Counterclaim": 0.5,
-    "I-Rebuttal": 0.55,
+    "I-Lead": 0.687,
+    "I-Position": 0.537,
+    "I-Evidence": 0.637,
+    "I-Claim": 0.537,
+    "I-Concluding Statement": 0.687,
+    "I-Counterclaim": 0.537,
+    "I-Rebuttal": 0.537,
 }
 
 if not os.path.exists(Config.model_dir):
@@ -114,7 +114,7 @@ def ner(df_texts, df_train):
     all_entities = []
     for _,  row in tqdm(df_texts.iterrows(), total=len(df_texts)):
         total = len(row['text_split'])
-        entities = ['0'] * total
+        entities = ['O'] * total
 
         for _, row2 in df_train[df_train['id'] == row['id']].iterrows():
             discourse = row2['discourse_type']
@@ -380,11 +380,11 @@ def inference(model, dl, criterion, valid_flg):
             logits = active_logits(raw_logits, word_ids)
             labels = active_labels(raw_labels)
             sf_logits = torch.softmax(logits, dim= -1)
+            sf_raw_logits = torch.softmax(raw_logits, dim=-1)
             preds, preds_prob = active_preds_prob(sf_logits)
             valid_accuracy += accuracy_score(labels.cpu().numpy(), preds.cpu().numpy())
             loss = criterion(logits, labels)
-            valid_loss += loss.item()
-            sf_raw_logits = torch.softmax(raw_logits, dim=-1)
+            valid_loss += loss.item())
         
         if batch_idx == 1:
             all_logits = sf_raw_logits.cpu().numpy()
@@ -460,12 +460,12 @@ def post_process_pred(df, all_preds, all_preds_prob):
         j = 0
         while j < len(pred):
             cls = pred[j]
-            if cls == '0': j += 1
+            if cls == 'O': j += 1
             else: cls = cls.replace('B', 'I')
             end = j + 1
             while end < len(pred) and pred[end] == cls:
                 end += 1
-            if cls != '0' and cls !='':
+            if cls != 'O' and cls !='':
                 avg_score = np.mean(pred_prob[j:end])
                 if end - j > MIN_THRESH[cls] and avg_score > PROB_THRESH[cls]:
                     final_preds.append((idx, cls.replace('I-', ''), ' '.join(map(str, list(range(j, end))))))
