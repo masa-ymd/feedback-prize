@@ -539,6 +539,10 @@ def valid_fn(model, df_val, df_val_eval, dl_val, epoch, criterion):
 oof = pd.DataFrame()
 for i_fold in range(Config.n_fold):
     print(f'=== fold{i_fold} training ===')
+    
+    if i_fold != 4:
+        continue
+
     model, tokenizer = build_model_tokenizer()
     model = model.to(device)
     optimizer = torch.optim.Adam(params=model.parameters(), lr=Config.lr)
